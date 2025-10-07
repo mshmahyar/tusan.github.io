@@ -70,4 +70,216 @@
       transition: 0.3s;
     }
 
+    .hero a:hover {
+      background: #009999;
+    }
+
+    .services {
+      padding: 60px 20px;
+      background: #fff;
+      text-align: center;
+    }
+
+    .services h2 {
+      font-size: 2rem;
+      color: #0a2540;
+      margin-bottom: 40px;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .service-card {
+      background: #f0f4f8;
+      border-radius: 15px;
+      padding: 25px;
+      transition: 0.3s;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .service-card img {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 15px;
+    }
+
+    .service-card h3 {
+      margin: 10px 0 0 0;
+      font-size: 1.1rem;
+      color: #0a2540;
+    }
+
+    .contact {
+      background: #163e63;
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .contact h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+
+    .contact p {
+      margin: 8px 0;
+      font-size: 1rem;
+    }
+
+    .socials {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .socials img {
+      width: 35px;
+      height: 35px;
+      transition: 0.3s;
+    }
+
+    .socials img:hover {
+      transform: scale(1.2);
+    }
+
+    .map {
+      margin-top: 40px;
+    }
+
+    iframe {
+      width: 90%;
+      max-width: 600px;
+      height: 300px;
+      border: none;
+      border-radius: 10px;
+    }
+
+    footer {
+      background: #0a2540;
+      color: #ccc;
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="لوگو کافی نت توسن">
+    <nav>
+      <a href="#home">خانه</a>
+      <a href="#services">خدمات</a>
+      <a href="https://t.me/tusan_admin" target="_blank">ربات تلگرام</a>
+      <a href="#contact">تماس با ما</a>
+    </nav>
+  </header>
+
+  <section id="home" class="hero" data-aos="fade-up">
+    <h1>ربات کافی نت توسن</h1>
+    <p>سیستمی هوشمند برای انجام خدمات آنلاین، دانشجویی، مالیاتی و بسیاری دیگر!</p>
+    <a href="https://t.me/tusan_admin" target="_blank">ورود به ربات تلگرام</a>
+  </section>
+
+  <section id="services" class="services">
+    <h2 data-aos="fade-down">خدمات ما</h2>
+    <div class="service-grid">
+      <div class="service-card" data-aos="fade-up">
+        <img src="ثبت نام های اینترنتی.png" alt="">
+        <h3>ثبت نام های اینترنتی</h3>
+      </div>
+      <div class="service-card" data-aos="fade-up">
+        <img src="خدمات دانشجویی.png" alt="">
+        <h3>خدمات دانشجویی</h3>
+      </div>
+      <div class="service-card" data-aos="fade-up">
+        <img src="خدمات دانش آموزی.png" alt="">
+        <h3>خدمات دانش آموزی</h3>
+      </div>
+      <div class="service-card" data-aos="fade-up">
+        <img src="اظهارنامه مالیاتی.png" alt="">
+        <h3>اظهارنامه مالیاتی</h3>
+      </div>
+      <div class="service-card" data-aos="fade-up">
+        <img src="خدمات بیمه.png" alt="">
+        <h3>خدمات بیمه</h3>
+      </div>
+      <div class="service-card" data-aos="fade-up">
+        <img src="خدمات خودرو.png" alt="">
+        <h3>خدمات خودرو</h3>
+      </div>
+      <div class="service-card" data-aos="fade-up">
+        <img src="خدمات بورس و سهام.png" alt="">
+        <h3>خدمات بورس و سهام</h3>
+      </div>
+      <div class="service-card" data-aos="fade-up">
+        <img src="پایان نامه.png" alt="">
+        <h3>پایان نامه</h3>
+      </div>
+      <div class="service-card" data-aos="fade-up">
+        <img src="پروژه دانشجویی.png" alt="">
+        <h3>پروژه دانشجویی</h3>
+      </div>
+      <div class="service-card" data-aos="fade-up">
+        <img src="پرینت و نشر.png" alt="">
+        <h3>پرینت و نشر</h3>
+      </div>
+      <div class="service-card" data-aos="fade-up">
+        <img src="ثبت پروانه و شرکت.png" alt="">
+        <h3>ثبت پروانه و شرکت</h3>
+      </div>
+      <div class="service-card" data-aos="fade-up">
+        <img src="وام و تسهیلات.png" alt="">
+        <h3>وام و تسهیلات</h3>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact" data-aos="fade-up">
+    <h2>تماس با ما</h2>
+    <p>📞 09390945414</p>
+    <p>📍 مراغه - خیابان ساسان (شهید مدرس) - جنب مسجد چهارده معصوم</p>
+    <div class="socials">
+      <a href="https://t.me/tusan_admin" target="_blank"><img src="telegram.png" alt="تلگرام"></a>
+      <a href="https://eitaa.com/mahdi_msh" target="_blank"><img src="eitaa.png" alt="ایتا"></a>
+      <a href="https://rubika.ir/tusan_c" target="_blank"><img src="rubika.png" alt="روبیکا"></a>
+      <a href="https://shad.ir/tusan_cofeenet" target="_blank"><img src="shad.png" alt="شاد"></a>
+      <a href="https://wa.me/989390945414" target="_blank"><img src="whatsapp.png" alt="واتساپ"></a>
+    </div>
+
+    <div class="map">
+      <!-- اینجا بعدا لینک نقشه گوگل‌مپ قرار بگیره -->
+      <!-- <iframe src="https://www.google.com/maps/embed?..."></iframe> -->
+    </div>
+  </section>
+
+  <footer>
+    طراحی توسط کافی نت توسن © <span id="year"></span>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 1000 });
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
 </html>
