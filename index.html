@@ -1,4 +1,109 @@
 <!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>کافی‌نت توسن ☕</title>
+
+  <!-- فونت فارسی -->
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@latest/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+
+  <!-- آیکون‌ها (Font Awesome) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    body {
+      font-family: "Vazirmatn", sans-serif;
+      margin: 0;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    /* هدر */
+    header {
+      background: linear-gradient(135deg, #1e88e5, #1976d2);
+      color: white;
+      text-align: center;
+      padding: 30px 10px;
+    }
+
+    header img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    header p {
+      margin: 5px 0 0;
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    /* منو */
+    nav {
+      background: #1565c0;
+      text-align: center;
+      padding: 10px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: 500;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    /* سکشن‌ها */
+    section {
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    section h2 {
+      color: #1565c0;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .services {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .service-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 20px;
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .service-card i {
+      font-size: 30px;
+      color: #1976d2;
+      margin-bottom: 10px;
+    }
+
+    /* دکمه ربات */
     .bot-link {
       display: block;
       width: fit-content;
@@ -50,9 +155,9 @@
 
   <!-- 🔹 هدر -->
   <header>
-    <!-- 📌بعداً لوگوی کافی‌نتت رو اینجا آپلود کن -->
+    <!-- 📌 بعداً لوگوی کافی‌نتت رو اینجا آپلود و لینک بده -->
     <img src="logo.png" alt="لوگوی کافی‌نت توسن" />
-    <h1>کافی‌نت مهدی ☕</h1>
+    <h1>کافی‌نت توسن ☕</h1>
     <p>سفارش آنلاین، خدمات ثبت‌نام، پرینت و پشتیبانی دانشجویی</p>
   </header>
 
@@ -80,3 +185,58 @@
       <div class="service-card">
         <i class="fa-solid fa-print"></i>
         <h3>پرینت و کپی</h3>
+        <p>پرینت رنگی، سیاه و سفید، و اسکن اسناد با کیفیت بالا.</p>
+      </div>
+      <div class="service-card">
+        <i class="fa-solid fa-keyboard"></i>
+        <h3>تایپ و ترجمه</h3>
+        <p>تایپ فارسی و انگلیسی، و ترجمه تخصصی متون.</p>
+      </div>
+      <div class="service-card">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <h3>ثبت‌نام سامانه‌ها</h3>
+        <p>خدمات ثبت‌نام دانش‌آموزی، آزمون‌های فنی و حرفه‌ای و دانشگاهی.</p>
+      </div>
+      <div class="service-card">
+        <i class="fa-solid fa-wifi"></i>
+        <h3>اینترنت و فکس</h3>
+        <p>دسترسی سریع به اینترنت، ارسال فکس و خدمات اداری.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🔹 ربات -->
+  <section id="bot">
+    <h2>ربات تلگرام کافی‌نت توسن</h2>
+    <p style="text-align:center;">برای ثبت سفارش و ارتباط سریع با ما از ربات زیر استفاده کنید 👇</p>
+    <!-- 📌 این لینک رو با آدرس واقعی رباتت جایگزین کن -->
+    <a href="https://t.me/YourCafeNetBot" class="bot-link">
+      <i class="fa-brands fa-telegram"></i> ورود به ربات تلگرام
+    </a>
+  </section>
+
+  <!-- 🔹 تماس و شبکه‌ها -->
+  <section id="contact" class="contact">
+    <h2>تماس با ما</h2>
+    <p>برای پشتیبانی و سوالات، از طریق شبکه‌های زیر با ما در ارتباط باشید:</p>
+
+    <div class="social-icons">
+      <!-- 📌 لینک‌های واقعی خودت رو جایگزین کن -->
+      <a href="https://t.me/tusan_admin" title="تلگرام"><i class="fa-brands fa-telegram"></i></a>
+      <a href="https://eitaa.com/mahdi_msh" title="ایتا"><i class="fa-solid fa-comment-dots"></i></a>
+      <a href="https://rubika.ir/tusan_c" title="روبیکا"><i class="fa-solid fa-circle-nodes"></i></a>
+      <a href="https://shad.ir/tusan_cofeenet" title="شاد"><i class="fa-solid fa-graduation-cap"></i></a>
+      <a href="https://wa.me/+989390945414" title="واتساپ"><i class="fa-brands fa-whatsapp"></i></a>
+    </div>
+
+    <p style="margin-top:20px;">📞 شماره تماس: <b>۰۹۱۲۳۴۵۶۷۸۹</b></p>
+    <p>📍 آدرس: مراغه، خیابان ساسان(شیهید مدرس)، جنب مسجد چهارده معصوم</p>
+  </section>
+
+  <!-- 🔹 فوتر -->
+  <footer>
+    <p>© ۲۰۲۵ کافی‌نت توسن | طراحی شده با ❤️ توسط کافی نت توسن</p>
+  </footer>
+
+</body>
+</html>
