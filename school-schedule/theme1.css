@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
+
+body {
+  font-family: 'Vazirmatn', Tahoma, sans-serif;
+  margin:0; padding:20px; position:relative;
+  background-image: url('1.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+/* تنظیمات راست‌چین فارسی */
+body {
+  direction: rtl;
+  text-align: right;
+  font-family: 'Vazirmatn', Tahoma, sans-serif;
+}
+
+/* جدول راست‌چین */
+table {
+  direction: rtl;
+}
+
+th, td {
+  text-align: center; /* وسط‌چین محتوا */
+}
+
+/* فیلدها */
+.info-fields {
+  flex-direction: row-reverse;
+}
+
+.info-fields label {
+  text-align: right;
+}
+
+/* عنوان وسط صفحه */
+h1 {
+  text-align: center;
+}
+
+/* المان پایین صفحه */
+.decor-shapes .student {
+  width:120px; height:80px;
+  background-image: url('11.webp');
+  background-size: contain;
+  background-repeat: no-repeat;
+  position:absolute; bottom:10px; left:50%;
+  transform: translateX(-50%);
+}
+
+/* عنوان */
+h1 { text-align:center; font-size:36px; font-weight:700; margin-bottom:20px; }
+
+/* فیلدها */
+.info-fields { display:flex; flex-wrap:wrap; gap:15px; margin-bottom:25px; }
+.info-fields label { flex:1 1 45%; display:flex; flex-direction:column; font-weight:600; }
+.info-fields input { padding:8px; font-size:16px; margin-top:5px; border-radius:6px; border:1px solid #888; background:#fff; }
+
+/* جدول */
+table { width:100%; border-collapse:collapse; margin-bottom:20px; border-radius:10px; overflow:hidden; }
+th, td { border:2px solid #444; text-align:center; padding:12px; }
+th { background:rgba(255,255,255,0.7); font-weight:700; font-size:16px; }
+td input { width:90%; padding:6px; border-radius:6px; border:1px solid #444; background:#fff; }
+
+/* چاپ */
+@media print {
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .decor-shapes, body { display:block !important; }
+  input { border:1px solid #000 !important; background:#fff !important; }
+}
