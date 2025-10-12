@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>برنامه هفتگی</title>
+
+<!-- CSS قالب پیش‌فرض -->
+<link id="theme-link" rel="stylesheet" href="theme1.css">
+
+  <!-- 🔹 دکمه دریافت PDF -->
+  <button id="download-pdf" class="print-btn">📄 دریافت نسخه PDF</button>
+
+<style>
+/* دکمه انتخاب قالب */
+.theme-selector {
+  display:flex; gap:10px; justify-content:center; margin-bottom:20px;
+}
+.theme-selector button {
+  padding:8px 16px;
+  font-size:16px;
+  font-weight:600;
+  border-radius:6px;
+  border:1px solid #444;
+  cursor:pointer;
+  background:#eee;
+}
+.theme-selector button.active {
+  background:#444; color:#fff;
+}
+
+/* تنظیمات چاپ */
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .decor-shapes {
+    display: block !important;
+  }
+  input {
+    border:1px solid #000 !important;
+    background:#fff !important;
+  }
+  .theme-selector, .btn {
+    display:none; /* دکمه‌ها در چاپ نشان داده نشوند */
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- انتخاب قالب -->
+  <div class="theme-selector">
+    <button data-theme="theme1.css" class="active">قالب 1</button>
+    <button data-theme="theme2.css">قالب 2</button>
+    <button data-theme="theme3.css">قالب 3</button>
+    <button data-theme="theme4.css">قالب 4</button>
+  </div>
+
+  <!-- المان‌های تزئینی -->
+  <div class="decor-shapes">
+    <!-- قالب 1 -->
+    <div class="triangle"></div>
+    <div class="rectangle"></div>
+    <div class="trapezoid"></div>
+    <div class="circle"></div>
+    <div class="book"></div>
+
+    <!-- قالب 2 -->
+    <div class="ruler"></div>
+    <div class="pencil"></div>
+    <div class="book2"></div>
+
+    <!-- قالب 3 -->
+    <div class="line"></div>
+
+    <!-- قالب 4 -->
+    <div class="sun"></div>
+    <div class="cloud"></div>
+    <div class="star"></div>
+  </div>
+
+  <!-- عنوان برنامه هفتگی -->
+  <h1>برنامه هفتگی</h1>
+
+  <!-- فیلدهای مشخصات -->
+  <div class="info-fields">
+    <label>نام: <input type="text" id="name"></label>
+    <label>نام خانوادگی: <input type="text" id="family"></label>
+    <label>کلاس: <input type="text" id="class"></label>
+    <label>مدرسه: <input type="text" id="school"></label>
+  </div>
+
+  <!-- جدول برنامه هفتگی -->
+  <table>
+    <thead>
+      <tr>
+        <th>روز / ساعت</th>
+        <th>شنبه</th>
+        <th>یکشنبه</th>
+        <th>دوشنبه</th>
+        <th>سه‌شنبه</th>
+        <th>چهارشنبه</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+      <tr><td>2</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+      <tr><td>3</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+      <tr><td>4</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+      <tr><td>5</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+      <tr><td>6</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    </tbody>
+  </table>
+
+  <!-- دکمه چاپ -->
+  <button onclick="printSchedule()" class="btn">چاپ / PDF</button>
+
+</div>
+
+<script>
+// تغییر قالب
+const buttons=document.querySelectorAll('.theme-selector button');
+const themeLink=document.getElementById('theme-link');
+
+buttons.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    buttons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    themeLink.href=btn.getAttribute('data-theme');
+  });
+});
+
+// چاپ
+function printSchedule(){
+  const name=document.getElementById('name').value;
+  const family=document.getElementById('family').value;
+  const cls=document.getElementById('class').value;
+  const school=document.getElementById('school').value;
+  const tableHtml=document.querySelector('table').outerHTML;
+  const currentTheme=themeLink.href;
+
+  const w=window.open('','_blank','width=900,height=700');
+  w.document.write(`<html><head><title>برنامه هفتگی</title><link rel="stylesheet" href="${currentTheme}"></head><body dir="rtl">`);
+  w.document.write(`<h1 style="text-align:center;">برنامه هفتگی</h1>`);
+  w.document.write(`<p>نام: ${name} | نام خانوادگی: ${family} | کلاس: ${cls} | مدرسه: ${school}</p>`);
+  w.document.write(tableHtml);
+  w.document.write('</body></html>');
+  w.document.close();
+  w.print();
+}
+</script>
+
+  <!-- 🔹 کتابخانه html2pdf -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- 🔹 اسکریپت تبدیل به PDF -->
+  <script>
+  document.getElementById('download-pdf').addEventListener('click', () => {
+    const element = document.getElementById('schedule'); // فقط بخش جدول
+    const opt = {
+      margin: [0, 0, 0, 0],
+      filename: 'برنامه-هفتگی.pdf',
+      image: { type: 'jpeg', quality: 1 },
+      html2canvas: { 
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    };
+    html2pdf().set(opt).from(element).save();
+  });
+  </script>
+
+  <!-- 🔹 استایل دکمه -->
+  <style>
+  .print-btn {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    transition: 0.3s;
+  }
+  .print-btn:hover {
+    background: #0056b3;
+  }
+  </style>
+</body>
+</html>
