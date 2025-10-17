@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>تبدیل پی دی اف به ورد توسن — آفلاین</title>
+
+<style>
+  :root{
+    --bg:#071322; --card:#081625; --muted:#9fb0bd; --accent:#22d3ee; --accent2:#60a5fa;
+  }
+  body{margin:0;font-family:"Vazirmatn",Tahoma,Arial;background:linear-gradient(180deg,#04121a,#081624);color:#e7f0f7;display:flex;align-items:center;justify-content:center;height:100vh}
+  .wrap{width:940px;max-width:96%;padding:22px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;box-shadow:0 10px 40px rgba(2,6,23,0.6)}
+  h1{margin:0 0 6px 0;font-size:20px}
+  p.lead{margin:0;color:var(--muted);font-size:13px}
+  .drop{margin-top:18px;padding:18px;border-radius:10px;border:2px dashed rgba(255,255,255,0.04);min-height:150px;display:flex;align-items:center;justify-content:center;flex-direction:column}
+  input[type=file]{display:none}
+  .btn{margin-top:12px;padding:10px 16px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#02222b;font-weight:700;cursor:pointer}
+  .row{display:flex;gap:12px;margin-top:14px;align-items:center}
+  .status{color:var(--muted);font-size:13px}
+  .small{font-size:12px;color:var(--muted);margin-top:8px}
+  .progress{height:8px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden;margin-top:12px}
+  .bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width 350ms}
+  code{background:rgba(255,255,255,0.02);padding:6px;border-radius:6px;color:#bfeefd}
+</style>
+
+<script src="pdf.min.js"></script>
+<script>
+  const pdfjsLib = window['pdfjs-dist/build/pdf'];
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
+</script>
+<script src="https://cdn.jsdelivr.net/npm/docx@7.7.0/build/docx.umd.js"></script>
+
+
+</head>
+<body>
+  <div class="wrap">
+    <h1>تبدیل پی دی اف به ورد <span style="color:var(--accent)">توسن</span></h1>
+    <p class="lead">تلاش می‌شود جداول، کادرها، تصاویر و متن‌ها با بیشترین شباهت به فایل Word منتقل شوند.</p>
+
+    <div class="drop" id="drop">
+      <div>فایل PDF را اینجا رها کنید یا کلیک کنید</div>
+      <label class="btn" for="fileInput">انتخاب فایل PDF</label>
+      <input id="fileInput" type="file" accept="application/pdf">
+      <div class="small">حجم پیشنهادی کمتر از 20 مگابایت — PDF باید متنی (not scanned) باشد.</div>
+    </div>
+
+    <div class="row">
+      <button class="btn" id="convertBtn">تبدیل به Word</button>
+      <div class="status" id="status">آماده</div>
+    </div>
+
+    <div class="progress" id="progress" style="display:none"><div class="bar" id="bar"></div></div>
+    <p class="small">نکته: برای نتیجه بهتر فایل PDF متنی و با فونت استاندارد استفاده کن.</p>
+  </div>
+
+<script>
+/*
+  پیاده‌سازی:
+  - با pdf.js صفحات را میخوانیم
+  - برای هر صفحه: متن‌های موقعیتی (x,y) را جمع میکنیم
+  - خطوط را بر اساس y گروه‌بندی می‌کنیم
+  - ستون‌ها را با خوشه‌بندی ساده روی x تشخیص می‌دهیم (اگر تکرار وجود داشته باشد)
+  - اگر ستون‌ها تشخیص داده شدند، جدول ساخته می‌شود؛ در غیر اینصورت متن ساده اضافه می‌شود
+  - تصاویر صفحه به صورت PNG گرفته و در سند قرار می‌گیرد
+  - از کتابخانه docx برای ساخت docx استفاده می‌شود
+*/
+
+const pdfjsLib = window['pdfjs-dist/build/pdf'];
+// worker (بعضی مرورگرها نیاز دارند)
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.9.179/build/pdf.worker.min.js';
+
+const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, Media } = window.docx;
+
+const fileInput = document.getElementById('fileInput');
+const drop = document.getElementById('drop');
+const convertBtn = document.getElementById('convertBtn');
+const status = document.getElementById('status');
+const progress = document.getElementById('progress');
+const bar = document.getElementById('bar');
+
+let loadedPdf = null;
+let pdfArrayBuffer = null;
+
+drop.addEventListener('dragover', e=>{ e.preventDefault(); drop.style.boxShadow='0 10px 40px rgba(0,0,0,0.4)'; });
+drop.addEventListener('dragleave', e=>{ drop.style.boxShadow='none'; });
+drop.addEventListener('drop', e=>{ e.preventDefault(); drop.style.boxShadow='none'; const f = e.dataTransfer.files[0]; if(f) handleFile(f); });
+
+fileInput.addEventListener('change', e=>{ if(e.target.files[0]) handleFile(e.target.files[0]); });
+
+function handleFile(f){
+  if(!f) return;
+  status.textContent = f.name;
+  const reader = new FileReader();
+  reader.onload = function(evt){
+    pdfArrayBuffer = evt.target.result;
+    status.textContent = 'فایل آماده است: ' + f.name;
+  }
+  reader.readAsArrayBuffer(f);
+}
+
+function showProgress(p){
+  progress.style.display = 'block';
+  bar.style.width = Math.min(100,Math.max(3, p*100)) + '%';
+}
+function hideProgress(){ progress.style.display='none'; bar.style.width='0%'; }
+
+convertBtn.addEventListener('click', async ()=>{
+  if(!pdfArrayBuffer){ alert('ابتدا یک فایل پی‌دی‌اف انتخاب کنید.'); return; }
+  convertBtn.disabled = true;
+  status.textContent = 'بارگذاری PDF...';
+  showProgress(0.05);
+  try{
+    const loadingTask = pdfjsLib.getDocument({data: pdfArrayBuffer});
+    const pdf = await loadingTask.promise;
+    loadedPdf = pdf;
+    const numPages = pdf.numPages;
+    status.textContent = `تبدیل ${numPages} صفحه...`;
+    const doc = new Document();
+    let pageIndex = 0;
+    for(let i=1;i<=numPages;i++){
+      pageIndex = i;
+      showProgress(i/numPages*0.85 + 0.05);
+      status.textContent = `در حال پردازش صفحه ${i} از ${numPages}...`;
+      const page = await pdf.getPage(i);
+
+      // 1) رندر تصویر صفحه (برای درج تصویر در سند)
+      const viewport = page.getViewport({scale: 1.5});
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(viewport.width);
+      canvas.height = Math.round(viewport.height);
+      const ctx = canvas.getContext('2d');
+      await page.render({canvasContext: ctx, viewport}).promise;
+      const imgDataUrl = canvas.toDataURL('image/png');
+
+      // 2) استخراج متن با موقعیت‌ها
+      const textContent = await page.getTextContent({disableCombineTextItems:false});
+      // textContent.items => هر آیتم شامل transform, str, width, height
+      // ساخت آرایه‌ای از آیتم‌های با x,y,text
+      const items = textContent.items.map(it=>{
+        // transform: [a,b,c,d, e(x?), f(y?)] — در pdf.js معمولاً e,f هستند مختصات
+        const tx = it.transform;
+        let x = tx[4];
+        let y = tx[5];
+        // در بعضی ورژن‌ها y از پایین صفحه است؛ normalize می‌کنیم با ارتفاع صفحه
+        // استفاده از scale viewport.transform: محاسبات پیچیده‌اند؛ اما برای خوشه‌بندی نسبی کافی است
+        return {str: it.str, x: x, y: y, width: it.width || 0};
+      });
+
+      // group by approximate line (y)
+      function groupByLine(items, yTol=2){
+        const lines = [];
+        items.forEach(it=>{
+          // پیدا کردن یک خط که y نزدیک دارد
+          let found = false;
+          for(const ln of lines){
+            if(Math.abs(ln.y - it.y) <= yTol){
+              ln.items.push(it); found = true; break;
+            }
+          }
+          if(!found) lines.push({y: it.y, items: [it]});
+        });
+        // sort lines top->bottom by y (smaller or greater depends on pdf.js coords)
+        lines.sort((a,b)=>b.y - a.y); // try to order visually top->bottom
+        // sort items in each line by x
+        lines.forEach(ln=> ln.items.sort((a,b)=>a.x - b.x));
+        return lines;
+      }
+
+      const lines = groupByLine(items, 3);
+
+      // detect potential column x positions by seeing repeated x positions across many lines
+      // collect x medians of items per line
+      const xCounts = {};
+      lines.forEach(ln=>{
+        ln.items.forEach(it=>{
+          // round x to nearest 8 px
+          const rx = Math.round(it.x/8)*8;
+          xCounts[rx] = (xCounts[rx] || 0) + 1;
+        });
+      });
+      // find the x positions that repeat a lot (threshold)
+      const xPositions = Object.keys(xCounts).map(k=>({x:+k,c:xCounts[k]})).sort((a,b)=>b.c-a.c);
+      // if more than 1 recurring x position and many repeats, consider them columns
+      const columnXs = xPositions.filter(p=>p.c >= Math.max(3, Math.floor(lines.length*0.12))).map(p=>p.x).sort((a,b)=>a-b);
+
+      // Heuristic: if found at least 2 columns, try table formation
+      let madeTable = false;
+      if(columnXs.length >= 2 && lines.length >= 3){
+        // build rows from lines: for each line, for each column find nearest item
+        const tableRows = [];
+        lines.forEach(ln=>{
+          const row = columnXs.map(()=> '');
+          // for each item, find nearest column index
+          ln.items.forEach(it=>{
+            let bestIdx = 0; let bestDist = Infinity;
+            for(let ci=0;ci<columnXs.length;ci++){
+              const d = Math.abs(it.x - columnXs[ci]);
+              if(d < bestDist){ bestDist = d; bestIdx = ci; }
+            }
+            // append text (with space) to that column
+            row[bestIdx] = (row[bestIdx] ? row[bestIdx] + ' ' : '') + it.str;
+          });
+          // check if row has any non-empty
+          if(row.some(c=>c && c.trim().length>0)){
+            tableRows.push(row.map(c=>c.trim()));
+          }
+        });
+
+        // Validate tableRows: must have consistent column counts across many rows
+        const hasEnoughRows = tableRows.length >= Math.min(3, Math.max(3, Math.floor(lines.length*0.4)));
+        if(hasEnoughRows){
+          // create docx table
+          const table = new Table({
+            rows: tableRows.map(r=> new TableRow({ children: r.map(cellText => new TableCell({
+              children: [ new Paragraph({ children: [ new TextRun(String(cellText || '')) ] }) ],
+              width: { size: Math.floor(100/columnXs.length), type: WidthType.PERCENTAGE }
+            }) ) }) )
+          });
+          doc.addSection({children: [table]});
+          madeTable = true;
+        }
+      }
+
+      if(!madeTable){
+        // add rendered image first (if page contains images/complex layout) — optional: we add both text and image
+        // Add text paragraphs
+        const pageParagraphs = [];
+        // join lines to produce readable paragraphs
+        lines.forEach(ln=>{
+          const lineText = ln.items.map(it=>it.str).join(' ');
+          pageParagraphs.push(new Paragraph({children:[ new TextRun(lineText)]}));
+        });
+        doc.addSection({children: pageParagraphs});
+      }
+
+      // always append the page image at the end (useful to preserve exact layout or complex boxes)
+      // convert dataURL to binary for docx media
+      try{
+        const base64 = imgDataUrl.split(',')[1];
+        const img = Media.addImage(doc, base64, canvas.width, canvas.height);
+        // add image paragraph
+        doc.addSection({children:[ new Paragraph(img) ]});
+      }catch(e){
+        // ignore image insertion errors
+        console.warn('image add error', e);
+      }
+    } // end pages loop
+
+    status.textContent = 'در حال ساخت فایل Word...';
+    showProgress(0.95);
+
+    // pack and save docx
+    const packer = new Packer();
+    const blob = await packer.toBlob(doc);
+    // download
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'converted.docx';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+
+    status.textContent = 'تبدیل پایان یافت — فایل دانلود شد';
+    hideProgress();
+  }catch(err){
+    console.error(err);
+    alert('خطا در پردازش فایل: ' + (err && err.message ? err.message : err));
+    status.textContent = 'خطا';
+    hideProgress();
+  } finally {
+    convertBtn.disabled = false;
+  }
+});
+</script>
+
+</body>
+</html>
